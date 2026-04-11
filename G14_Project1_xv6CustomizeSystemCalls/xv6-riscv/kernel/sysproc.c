@@ -114,3 +114,23 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+uint64
+sys_waitpid(void)
+{
+  int pid;
+  uint64 addr;
+  argint(0, &pid);
+  argaddr(1, &addr);
+  return kwaitpid(pid, addr);
+}
+
+uint64
+sys_getchildren(void)
+{
+  uint64 addr;
+  int maxn;
+  argaddr(0, &addr);
+  argint(1, &maxn);
+  return kgetchildren(addr, maxn);
+}

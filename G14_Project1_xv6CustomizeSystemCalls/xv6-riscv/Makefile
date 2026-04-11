@@ -147,6 +147,7 @@ UPROGS=\
 	$U/_dorphan\
 	$U/_ppid\
 	$U/_forkcount\
+	$U/_testproc\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

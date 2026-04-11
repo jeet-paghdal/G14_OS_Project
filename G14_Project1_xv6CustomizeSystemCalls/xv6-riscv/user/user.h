@@ -26,6 +26,9 @@ int pause(int);
 int uptime(void);
 int getppid(void);
 
+int waitpid(int pid, int *status);
+int getchildren(int *buf, int maxn);
+
 // ulib.c
 int stat(const char*, struct stat*);
 char* strcpy(char*, const char*);
