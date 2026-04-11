@@ -5,6 +5,7 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "defs.h"
+#include "procinfo.h"
 
 struct cpu cpus[NCPU];
 
@@ -309,6 +310,42 @@ kfork(void)
   release(&np->lock);
   p->fork_count++;
   return pid;
+}
+
+// Return the number of active (non-UNUSED) processes.
+int
+kgetproccount(void)
+{
+  int count = 0;
+  struct proc *p;
+  for(p = proc; p < &proc[NPROC]; p++){
+    acquire(&p->lock);
+    if(p->state != UNUSED)
+      count++;
+    release(&p->lock);
+  }
+  return count;
+}
+
+// Fill *info with info about the process with the given pid.
+// Returns 0 on success, -1 if no such process.
+int
+kgetprocinfo(int pid, struct procinfo *info)
+{
+  struct proc *p;
+  for(p = proc; p < &proc[NPROC]; p++){
+    acquire(&p->lock);
+    if(p->pid == pid && p->state != UNUSED){
+      info->pid   = p->pid;
+      info->state = p->state;
+      info->sz    = p->sz;
+      safestrcpy(info->name, p->name, PROC_NAME_MAX);
+      release(&p->lock);
+      return 0;
+    }
+    release(&p->lock);
+  }
+  return -1;
 }
 
 // Pass p's abandoned children to init.
