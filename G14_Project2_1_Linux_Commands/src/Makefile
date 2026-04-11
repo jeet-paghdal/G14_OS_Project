@@ -4,7 +4,7 @@ CC      = gcc
 CFLAGS  = -Wall -Wextra -pedantic -std=c11
 
 
-TARGETS = myshell custom_echo
+TARGETS = myshell custom_echo custom_wc
 
 
 .PHONY: all
@@ -17,6 +17,9 @@ myshell: shell.c
 
 custom_echo: custom_echo.c
 	$(CC) $(CFLAGS) -o custom_echo custom_echo.c
+
+custom_wc: custom_wc.c
+	$(CC) $(CFLAGS) -o custom_wc custom_wc.c
 
 
 .PHONY: run
