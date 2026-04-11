@@ -10,7 +10,6 @@
 #define MAX_ARGS    128
 #define PROMPT     "myshell> "
 
-
 static int parse_input(char *line, char **args) {
     int count=0;
     char *token=strtok(line," \t");
@@ -32,7 +31,6 @@ static void run_custom_wc(char **args) {
         return;
     }
     if (pid==0) {
-        
         args[0]=local_path;
         execv(local_path,args);
         fprintf(stderr,"myshell: custom_wc: %s\n", strerror(errno));
@@ -53,10 +51,51 @@ static void run_custom_echo(char **args) {
         return;
     }
     if (pid==0) {
-        
         args[0]=local_path;
         execv(local_path,args);
         fprintf(stderr,"myshell: custom_echo: %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+    
+    int status;
+    waitpid(pid, &status, 0);
+}
+
+
+static void run_custom_cat(char **args) {
+    char local_path[512];
+    snprintf(local_path, sizeof(local_path), "./custom_cat");
+
+    pid_t pid=fork();
+    if (pid<0){
+        perror("fork");
+        return;
+    }
+    if (pid==0) {
+        args[0]=local_path;
+        execv(local_path,args);
+        fprintf(stderr,"myshell: custom_cat: %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+    
+    int status;
+    waitpid(pid, &status, 0);
+}
+
+
+static void run_custom_ls(char **args) {
+    char local_path[512];
+    snprintf(local_path, sizeof(local_path), "./custom_ls");
+
+    pid_t pid=fork();
+    if (pid<0){
+        perror("fork");
+        return;
+    }
+    if (pid==0) {
+        args[0]=local_path;
+        execv(local_path,args);
+        fprintf(stderr,"myshell: custom_ls: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
     
@@ -68,7 +107,7 @@ int main(void) {
     char  line[MAX_INPUT];
     char *args[MAX_ARGS];
 
-    printf("=== Custom Echo Shell (type 'exit' to quit) ===\n\n");
+    printf("=== Custom OS Shell (type 'exit' to quit) ===\n\n");
 
     while (1) {
         printf("%s",PROMPT);
@@ -90,11 +129,16 @@ int main(void) {
             break;
         }
 
+        // Updated command routing logic
         if (strcmp(args[0],"custom_echo") == 0) {
             run_custom_echo(args);
-        }else if(strcmp(args[0],"custom_wc") == 0) {
+        } else if(strcmp(args[0],"custom_wc") == 0) {
             run_custom_wc(args);
-        }else {
+        } else if(strcmp(args[0],"custom_cat") == 0) {
+            run_custom_cat(args);
+        } else if(strcmp(args[0],"custom_ls") == 0) {
+            run_custom_ls(args);
+        } else {
             fprintf(stderr, "myshell: unknown command '%s'.\n", args[0]);
         }
     }
