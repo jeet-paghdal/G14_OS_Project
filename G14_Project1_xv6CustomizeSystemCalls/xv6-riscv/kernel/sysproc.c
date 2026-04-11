@@ -6,6 +6,7 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "vm.h"
+#include "procinfo.h"
 
 uint64
 sys_exit(void)
@@ -14,6 +15,31 @@ sys_exit(void)
   argint(0, &n);
   kexit(n);
   return 0;  // not reached
+}
+
+uint64
+sys_getproccount(void)
+{
+  return kgetproccount();
+}
+
+uint64
+sys_getprocinfo(void)
+{
+  int pid;
+  uint64 addr;
+  struct procinfo info;
+
+  argint(0, &pid);
+  argaddr(1, &addr);
+
+  if(kgetprocinfo(pid, &info) < 0)
+    return -1;
+
+  if(copyout(myproc()->pagetable, addr, (char*)&info, sizeof(info)) < 0)
+    return -1;
+
+  return 0;
 }
 
 uint64
