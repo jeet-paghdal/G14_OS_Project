@@ -84,6 +84,23 @@ usertrap(void)
   if(which_dev == 2)
     yield();
 
+  if(p->handling_signal == 0) {
+    for(int i = 0; i < 32; i++) {
+      if(p->pending_signals & (1 << i)) { 
+        
+        // CHANGED: Check against -1 instead of 0
+        if(p->signal_handlers[i] != (uint64)-1) { 
+          
+          p->pending_signals &= ~(1 << i); 
+          p->saved_trapframe = *(p->trapframe); 
+          p->trapframe->epc = p->signal_handlers[i]; 
+          p->handling_signal = 1; 
+          break; 
+        } 
+      }
+    }
+  }
+
   prepare_return();
 
   // the user page table to switch to, for trampoline.S

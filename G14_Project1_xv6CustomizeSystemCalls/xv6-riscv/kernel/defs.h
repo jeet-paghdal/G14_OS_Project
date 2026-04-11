@@ -109,6 +109,8 @@ int             kgetchildren(uint64, int);
 int             kgetproccount(void);
 int             kgetprocinfo(int, struct procinfo*);
 
+int             ksigsend(int, int);
+
 // swtch.S
 void            swtch(struct context*, struct context*);
 
