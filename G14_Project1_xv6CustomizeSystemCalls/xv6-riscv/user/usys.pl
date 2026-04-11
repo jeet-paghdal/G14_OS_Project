@@ -47,3 +47,6 @@ entry("waitpid");
 entry("getchildren");
 entry("getproccount");
 entry("getprocinfo");
+entry("signal");
+entry("sigsend");
+entry("sigreturn");

@@ -108,6 +108,10 @@ extern uint64 sys_getchildren(void);
 extern uint64 sys_getproccount(void);
 extern uint64 sys_getprocinfo(void);
 
+extern uint64 sys_signal(void);
+extern uint64 sys_sigsend(void);
+extern uint64 sys_sigreturn(void);
+
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
 static uint64 (*syscalls[])(void) = {
@@ -137,6 +141,9 @@ static uint64 (*syscalls[])(void) = {
 [SYS_getchildren] sys_getchildren,
 [SYS_getproccount] sys_getproccount,
 [SYS_getprocinfo]  sys_getprocinfo,
+[SYS_signal]    sys_signal,
+[SYS_sigsend]   sys_sigsend,
+[SYS_sigreturn] sys_sigreturn,
 };
 
 void

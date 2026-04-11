@@ -32,6 +32,10 @@ int getchildren(int *buf, int maxn);
 int getproccount(void);
 int getprocinfo(int pid, struct procinfo*);
 
+int signal(int signum, void (*handler)());
+int sigsend(int pid, int signum);
+int sigreturn(void);
+
 // ulib.c
 int stat(const char*, struct stat*);
 char* strcpy(char*, const char*);

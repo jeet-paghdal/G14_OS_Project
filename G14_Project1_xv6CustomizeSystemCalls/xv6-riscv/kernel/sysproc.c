@@ -160,3 +160,49 @@ sys_getchildren(void)
   argint(1, &maxn);
   return kgetchildren(addr, maxn);
 }
+
+uint64
+sys_signal(void)
+{
+  int signum;
+  uint64 handler;
+
+  // Just fetch the arguments directly, no if-check needed
+  argint(0, &signum);
+  argaddr(1, &handler);
+    
+  if(signum < 0 || signum >= 32)
+    return -1;
+
+  myproc()->signal_handlers[signum] = handler;
+
+  return 0;
+}
+
+uint64
+sys_sigreturn(void)
+{
+  struct proc *p = myproc();
+  
+  // Restore the original trapframe to resume normal execution
+  *(p->trapframe) = p->saved_trapframe;
+  p->handling_signal = 0;
+  
+  return p->trapframe->a0;
+}
+
+uint64
+sys_sigsend(void)
+{
+  int pid, signum;
+  
+  // Fetch arguments directly
+  argint(0, &pid);
+  argint(1, &signum);
+    
+  if(signum < 0 || signum >= 32)
+    return -1;
+
+  // ksigsend needs to be implemented in proc.c
+  return ksigsend(pid, signum);
+}
