@@ -148,6 +148,7 @@ UPROGS=\
 	$U/_ppid\
 	$U/_forkcount\
 	$U/_testproc\
+	$U/_proctest\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)
