@@ -29,6 +29,15 @@ sys_fork(void)
 }
 
 uint64
+sys_thread_create(void)
+{
+  uint64 func, arg;
+  argaddr(0, &func);
+  argaddr(1, &arg);
+  return thread_fork(func, arg);
+}
+
+uint64
 sys_wait(void)
 {
   uint64 p;

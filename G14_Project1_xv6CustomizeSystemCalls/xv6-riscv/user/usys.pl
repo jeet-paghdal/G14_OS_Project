@@ -45,3 +45,4 @@ entry("uptime");
 entry("getppid");
 entry("waitpid");
 entry("getchildren");
+entry("thread_create");

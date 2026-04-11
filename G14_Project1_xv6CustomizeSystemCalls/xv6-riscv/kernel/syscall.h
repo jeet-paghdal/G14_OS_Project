@@ -25,3 +25,4 @@
 #define SYS_getchildren 25 
 #define SYS_getproccount  26
 #define SYS_getprocinfo   27
+#define SYS_thread_create 28
