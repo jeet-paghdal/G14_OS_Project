@@ -45,3 +45,5 @@ entry("uptime");
 entry("getppid");
 entry("waitpid");
 entry("getchildren");
+entry("getproccount");
+entry("getprocinfo");
