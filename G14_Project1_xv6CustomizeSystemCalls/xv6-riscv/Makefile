@@ -149,6 +149,7 @@ UPROGS=\
 	$U/_forkcount\
 	$U/_testproc\
 	$U/_proctest\
+	$U/_testsignals\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)
