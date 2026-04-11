@@ -4,7 +4,7 @@ CC      = gcc
 CFLAGS  = -Wall -Wextra -pedantic -std=c11
 
 
-TARGETS = myshell custom_echo custom_wc
+TARGETS = myshell custom_echo custom_wc custom_ls custom_cat
 
 
 .PHONY: all
@@ -20,6 +20,14 @@ custom_echo: custom_echo.c
 
 custom_wc: custom_wc.c
 	$(CC) $(CFLAGS) -o custom_wc custom_wc.c
+
+# Target to compile custom_cat
+custom_cat: custom_cat.c
+	$(CC) $(CFLAGS) -o custom_cat custom_cat.c
+
+# Target to compile custom_ls
+custom_ls: custom_ls.c
+	$(CC) $(CFLAGS) -o custom_ls custom_ls.c
 
 
 .PHONY: run
