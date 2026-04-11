@@ -105,6 +105,8 @@ extern uint64 sys_getppid(void);
 
 extern uint64 sys_waitpid(void);
 extern uint64 sys_getchildren(void);
+extern uint64 sys_getproccount(void);
+extern uint64 sys_getprocinfo(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -133,6 +135,8 @@ static uint64 (*syscalls[])(void) = {
 [SYS_getppid] sys_getppid,
 [SYS_waitpid]     sys_waitpid,
 [SYS_getchildren] sys_getchildren,
+[SYS_getproccount] sys_getproccount,
+[SYS_getprocinfo]  sys_getprocinfo,
 };
 
 void
