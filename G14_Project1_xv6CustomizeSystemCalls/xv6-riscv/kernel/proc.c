@@ -373,6 +373,87 @@ kexit(int status)
   panic("zombie exit");
 }
 
+
+
+
+// Wait for a specific child process by pid.
+// Returns pid on success, -1 on failure.
+int
+kwaitpid(int pid, uint64 addr)
+{
+  struct proc *pp;
+  struct proc *p = myproc();
+
+  acquire(&wait_lock);
+
+  for(;;){
+    // Check that pid is actually a child of this process
+    int found_child = 0;
+    for(pp = proc; pp < &proc[NPROC]; pp++){
+      if(pp->parent == p && pp->pid == pid){
+        found_child = 1;
+        acquire(&pp->lock);
+        if(pp->state == ZOMBIE){
+          // Found the zombie child we were waiting for
+          if(addr != 0 && copyout(p->pagetable, addr, (char *)&pp->xstate,
+                                  sizeof(pp->xstate)) < 0) {
+            release(&pp->lock);
+            release(&wait_lock);
+            return -1;
+          }
+          freeproc(pp);
+          release(&pp->lock);
+          release(&wait_lock);
+          return pid;
+        }
+        release(&pp->lock);
+        break;
+      }
+    }
+
+    if(!found_child || killed(p)){
+      release(&wait_lock);
+      return -1;
+    }
+
+    // Child exists but hasn't exited yet; sleep
+    sleep(p, &wait_lock);
+  }
+}
+
+// Fill buf[] with PIDs of all living children of the calling process.
+// Returns the count of children written (up to maxn).
+int
+kgetchildren(uint64 addr, int maxn)
+{
+  struct proc *pp;
+  struct proc *p = myproc();
+  int pids[NPROC];
+  int n = 0;
+
+  acquire(&wait_lock);
+  for(pp = proc; pp < &proc[NPROC]; pp++){
+    if(pp->parent == p && pp->state != UNUSED && pp->state != ZOMBIE){
+      if(n < maxn)
+        pids[n] = pp->pid;
+      n++;
+    }
+  }
+  release(&wait_lock);
+
+  int tocopy = n < maxn ? n : maxn;
+  if(addr != 0 && copyout(p->pagetable, addr, (char*)pids,
+                          tocopy * sizeof(int)) < 0)
+    return -1;
+
+  return n;  // returns total count, even if some didn't fit
+}
+
+
+
+
+
+
 // Wait for a child process to exit and return its pid.
 // Return -1 if this process has no children.
 int
