@@ -143,6 +143,26 @@ static void run_custom_mv(char **args) {
     waitpid(pid, &status, 0);
 }
 
+static void run_custom_rm(char **args) {
+    char local_path[512];
+    snprintf(local_path, sizeof(local_path), "./custom_rm");
+    
+    pid_t pid = fork();
+    if (pid < 0) {
+       perror("fork");
+       return;
+    }
+    if (pid == 0) {
+       args[0] = local_path;
+       execv(local_path, args);
+       fprintf(stderr, "myshell: custom_rm: %s\n", strerror(errno));
+       exit(EXIT_FAILURE);
+    }
+    
+    int status;
+    waitpid(pid, &status, 0);
+}
+
 int main(void) {
     char  line[MAX_INPUT];
     char *args[MAX_ARGS];
@@ -181,6 +201,8 @@ int main(void) {
             run_custom_cp(args);
         } else if(strcmp(args[0],"custom_mv") == 0) { 
             run_custom_mv(args);
+        } else if(strcmp(args[0],"custom_rm") == 0) { 
+            run_custom_rm(args);
         } else {
             fprintf(stderr, "myshell: unknown command '%s'.\n", args[0]);
         }

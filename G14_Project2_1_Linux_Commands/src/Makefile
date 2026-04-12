@@ -1,7 +1,7 @@
 CC      = gcc
 CFLAGS  = -Wall -Wextra -pedantic -std=c11
 
-TARGETS = myshell custom_echo custom_wc custom_ls custom_cat custom_cp custom_mv
+TARGETS = myshell custom_echo custom_wc custom_ls custom_cat custom_cp custom_mv custom_rm
 
 .PHONY: all
 all: $(TARGETS)
@@ -29,6 +29,9 @@ custom_cp: custom_cp.c
 custom_mv: custom_mv.c
 	$(CC) $(CFLAGS) -o custom_mv custom_mv.c
 
+custom_rm: custom_rm.c
+	$(CC) $(CFLAGS) -o custom_rm custom_rm.c
+
 .PHONY: run
 run: all
 	./myshell
@@ -44,6 +47,5 @@ help:
 	@echo "  myshell      Build only the shell"
 	@echo "  custom_echo  Build only custom_echo"
 	@echo "  custom_cp    Build only custom_cp"
-	@echo "  custom_mv    Build only custom_mv
-	@echo "  run          Build and launch the shell"
+	@echo "  custom_mv    Build only custom_mv	@echo "  custom_rm    Build only custom_rm"	@echo "  run          Build and launch the shell"
 	@echo "  clean        Remove all compiled binaries"
