@@ -25,6 +25,9 @@
 #define SYS_getchildren 25 
 #define SYS_getproccount  26
 #define SYS_getprocinfo   27
+#define SYS_thread_create 31
+#define SYS_thread_join   32
+#define SYS_thread_exit   33
 
 #define SYS_signal    28
 #define SYS_sigsend   29

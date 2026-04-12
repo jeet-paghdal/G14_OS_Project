@@ -105,6 +105,9 @@ extern uint64 sys_getppid(void);
 
 extern uint64 sys_waitpid(void);
 extern uint64 sys_getchildren(void);
+extern uint64 sys_thread_create(void);
+extern uint64 sys_thread_join(void);
+extern uint64 sys_thread_exit(void);
 extern uint64 sys_getproccount(void);
 extern uint64 sys_getprocinfo(void);
 
@@ -139,6 +142,9 @@ static uint64 (*syscalls[])(void) = {
 [SYS_getppid] sys_getppid,
 [SYS_waitpid]     sys_waitpid,
 [SYS_getchildren] sys_getchildren,
+[SYS_thread_create] sys_thread_create,
+[SYS_thread_join] sys_thread_join,
+[SYS_thread_exit] sys_thread_exit,
 [SYS_getproccount] sys_getproccount,
 [SYS_getprocinfo]  sys_getprocinfo,
 [SYS_signal]    sys_signal,

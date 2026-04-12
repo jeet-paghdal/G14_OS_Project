@@ -29,6 +29,9 @@ int getppid(void);
 
 int waitpid(int pid, int *status);
 int getchildren(int *buf, int maxn);
+int thread_create(void (*func)(void*), void* arg);
+int thread_join(int pid);
+void thread_exit(void);
 int getproccount(void);
 int getprocinfo(int pid, struct procinfo*);
 

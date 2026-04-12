@@ -148,6 +148,8 @@ UPROGS=\
 	$U/_ppid\
 	$U/_forkcount\
 	$U/_testproc\
+	$U/_threadtest\
+	$U/_thread_demo\
 	$U/_proctest\
 	$U/_testsignals\
 

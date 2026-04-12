@@ -55,6 +55,30 @@ sys_fork(void)
 }
 
 uint64
+sys_thread_create(void)
+{
+  uint64 func, arg;
+  argaddr(0, &func);
+  argaddr(1, &arg);
+  return thread_fork(func, arg);
+}
+
+uint64
+sys_thread_join(void)
+{
+  int pid;
+  argint(0, &pid);
+  return kwaitpid(pid, 0);
+}
+
+uint64
+sys_thread_exit(void)
+{
+  kexit(0);
+  return 0;  // not reached
+}
+
+uint64
 sys_wait(void)
 {
   uint64 p;
