@@ -7,8 +7,10 @@ This repository contains the implementation for Project 2 (Option 1). We have de
 
 ## Contributors
 * **Nilay Choudhary (24JE0665)** - Implemented `custom_cp` and `custom_mv`.
-* **[Teammate 2 Name]** - 
-* **[Teammate 3 Name]** - 
+* **Patel Het Alpeshbhai (24JE0670)** - Implemented `custom_wc`.
+* **Paghdal Jeet Prakashkumar (24JE0667)** - Implemented `custom_echo`.
+* **[Teammate 4 Name]** - 
+* **[Teammate 5 Name]** - 
 
 ---
 
@@ -67,16 +69,18 @@ The shell operates in a continuous loop, parsing user input into arguments. When
 * **Details:**
 
 ### 5. Word Count: `custom_wc`
-**Implemented by:** [Teammate Name]
+**Implemented by:** Patel Het Alpeshbhai(24JE0670)
 * **Usage:** `custom_wc <filename>`
 * **Description:** Counts the number of lines, words, and characters in a file.
-* **Details:** 
+* **System Calls:** Uses `open()`, `read()`, and `close()`.
+* **Details:** Opens the file in `O_RDONLY` and reads it in 4096-byte buffer chunks. Iterates over each character to count newlines (lines), whitespace-delimited tokens (words), and total bytes (characters). Prints results in the format `lines words chars filename`.
 
 ### 6. Echo: `custom_echo`
-**Implemented by:** [Teammate Name]
-* **Usage:** `custom_echo <string>`
-* **Description:** Prints the provided string back to standard output.
-* **Details:**
+**Implemented by:** Paghdal Jeet Prakashkumar (24JE0667)
+* **Usage:** `custom_echo [OPTION]... [STRING]...`
+* **Description:** Prints the provided string(s) to standard output with optional escape sequence support.
+* **System Calls:** Uses `fputs()` and `putchar()` for output.
+* **Details:** Supports `-n` to suppress the trailing newline, `-e` to enable backslash escape interpretation (`\n`, `\t`, `\r`, `\a`, `\b`, `\\`, `\0NNN` octal), and `-E` to disable escapes (default). Combined flags like `-ne` are supported. Unknown flags are treated as string arguments.
 
 ---
 
