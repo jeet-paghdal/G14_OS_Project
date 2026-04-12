@@ -115,7 +115,7 @@ This feature introduces two new process management system calls that extend xv6'
 ## Feature 3: Process Inspection System Calls
 **Implemented by:** Patel Het Alpeshbhai(24JE0670)
 
-This feature introduces two new system calls(getprocinof( ) & getproccount()) that allow user-space programs to query runtime information about active processes in the xv6 process table.
+This feature introduces two new system calls(getprocinfo( ) & getproccount()) that allow user-space programs to query runtime information about active processes in the xv6 process table.
 
 ### Core Modifications
 * **Process Info Structure (`kernel/procinfo.h`)**: Introduced a new header defining `struct procinfo`, which serves as the data transfer object between the kernel and user space. It contains:
@@ -143,4 +143,4 @@ This feature introduces two new system calls(getprocinof( ) & getproccount()) th
 ### Testing & Execution
 * **Test Program:** `$ proctest`
 * The test program calls `getproccount()` to display the number of active processes, then calls `getprocinfo()` on its own PID to print its name, state, and memory size, and finally verifies that `getprocinfo(9999, ...)` correctly returns `-1` for a non-existent process.
-* **Screenshots:** ![alt text](project_1.png)
+* **Screenshots:** ![alt text](screenshots/proctest_execution.png)
