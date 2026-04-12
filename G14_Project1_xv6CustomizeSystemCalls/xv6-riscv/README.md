@@ -8,7 +8,7 @@ This repository contains the implementation for Project 1, which focuses on anal
 ## Contributors
 * **Nidhi Mithiya (24JE0664)** - 
 * **Nilay Choudhary (24JE0665)** - Signals Implementation
-* **PR Sanjit Ram (24JE0666)** - 
+* **PR Sanjit Ram (24JE0666)** - Threads Implementation
 * **Paghdal Jeet Prakashkumar (24JE0667)** - `waitpid` & `getchildren` Implementation
 * **Parul Sharma (24JE0669)** - 
 * **Patel Het Alpeshbhai (24JE0670)** - Process Inspection System Calls
