@@ -16,7 +16,7 @@ This repository contains the implementation for Project 1, which focuses on anal
 ---
 
 ## Feature 1: Signal Handling
-**Implemented by:** Nilay Choudhary
+**Implemented by:** Nilay Choudhary (24JE0665)
 
 This feature introduces a software interrupt mechanism allowing asynchronous communication between processes in xv6.
 
@@ -26,6 +26,8 @@ This feature introduces a software interrupt mechanism allowing asynchronous com
   * `signal_handlers[32]`: An array storing user-space memory addresses for registered signal handlers (initialized to `-1` to handle xv6's `0x0` virtual address baseline).
   * `saved_trapframe`: A backup of the process CPU state to allow resumption after signal execution.
   * `handling_signal`: A lock flag to prevent nested signal corruption.
+* **Process Allocation (`kernel/proc.c`)**: Updated `allocproc()` to explicitly zero out `pending_signals` and `handling_signal`, and initialize the `signal_handlers` array to `-1` when a new process is created, preventing uninitialized memory bugs.
+* **Kernel Internal Declarations (`kernel/defs.h`)**: Added prototype for `ksigsend(int, int)` in the `proc.c` section.
 
 ### System Calls Implemented
 1. `sys_signal(int signum, void (*handler)())`
@@ -43,10 +45,21 @@ This feature introduces a software interrupt mechanism allowing asynchronous com
 ### Trap Routing (`kernel/trap.c`)
 The signal execution logic is injected into `usertrap()` immediately before `prepare_return()`. If a signal is pending and a valid handler is registered (not equal to `-1`), the kernel backs up the current trapframe, modifies the Exception Program Counter (`epc`) to point to the user's custom handler, and allows the CPU to jump to that function upon returning to user space.
 
+### Supporting Changes
+* **`kernel/syscall.h`**: Added syscall numbers `SYS_signal` (22), `SYS_sigsend` (23), and `SYS_sigreturn` (24).
+* **`kernel/syscall.c`**: Registered the three new syscall handler functions in the dispatch table.
+* **`kernel/sysproc.c`**: Added the argument extraction and delegation logic for `sys_signal`, `sys_sigsend`, and `sys_sigreturn`.
+* **`user/usys.pl`**: Added `entry("signal")`, `entry("sigsend")`, and `entry("sigreturn")` to auto-generate the user-space syscall assembly stubs.
+* **`user/user.h`**: Exposed `signal()`, `sigsend()`, and `sigreturn()` as callable functions for user programs.
+
 ### Testing & Execution
 * **Test Program:** `$ testsignals`
-* **Screenshots:** The execution proof demonstrating the successful registration, delivery, execution, and resumption of the signal loop can be found in the `screenshots/` directory.
-
+* **What the test does:**
+  1. Forks a child process.
+  2. The child registers a custom handler for signal 10 and enters an infinite while-loop.
+  3. The parent pauses briefly, then calls `sigsend()` to deliver signal 10 to the child's PID.
+  4. The child intercepts the signal, breaks the loop via the handler, and exits cleanly.
+* **Screenshots:** ![Signal Test Execution](screenshots/testsignals_execution.png)
 ---
 
 ## Feature 2: `waitpid` and `getchildren` System Calls
@@ -179,5 +192,4 @@ This feature introduces threading capabilities to xv6, allowing multiple threads
 * **Test Program:** `$ threadtest`
 * The test program demonstrates thread creation, execution, and synchronization by creating multiple threads that perform concurrent tasks.
 * **Screenshots:** 
-  ![Thread Test C Code](screenshots/thread_test_c-code.png)
   ![Thread Test Execution](screenshots/thread_test.png)
