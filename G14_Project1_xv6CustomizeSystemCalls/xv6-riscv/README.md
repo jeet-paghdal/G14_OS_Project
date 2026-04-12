@@ -11,7 +11,7 @@ This repository contains the implementation for Project 1, which focuses on anal
 * **PR Sanjit Ram (24JE0666)** - 
 * **Paghdal Jeet Prakashkumar (24JE0667)** - `waitpid` & `getchildren` Implementation
 * **Parul Sharma (24JE0669)** - 
-* **Patel Het Alpeshbhai (24JE0670)** - 
+* **Patel Het Alpeshbhai (24JE0670)** - Process Inspection System Calls
 
 ---
 
@@ -64,8 +64,8 @@ This feature introduces two new process management system calls that extend xv6'
 * **Syscall Dispatch Table (`kernel/syscall.c`)**: Registered both new syscall handler functions (`sys_waitpid`, `sys_getchildren`) in the `extern` declaration list and in the `syscalls[]` function pointer array at indices 22 and 23.
 
 * **Syscall Numbers (`kernel/syscall.h`)**: Assigned unique numbers:
-  * `SYS_waitpid     22`
-  * `SYS_getchildren 23`
+  * `SYS_waitpid     24`
+  * `SYS_getchildren 25`
 
 * **Argument Extraction Layer (`kernel/sysproc.c`)**: Added `sys_waitpid()` and `sys_getchildren()` which read arguments from the process trapframe registers using `argint()` and `argaddr()`, then delegate to the kernel implementations.
 
@@ -112,7 +112,35 @@ This feature introduces two new process management system calls that extend xv6'
 
 ---
 
-## Feature 3: 
-**Implemented by:** 
+## Feature 3: Process Inspection System Calls
+**Implemented by:** Patel Het Alpeshbhai(24JE0670)
 
-[Details to be added]
+This feature introduces two new system calls(getprocinof( ) & getproccount()) that allow user-space programs to query runtime information about active processes in the xv6 process table.
+
+### Core Modifications
+* **Process Info Structure (`kernel/procinfo.h`)**: Introduced a new header defining `struct procinfo`, which serves as the data transfer object between the kernel and user space. It contains:
+  * `pid`: The process ID.
+  * `state`: The current process state encoded as an integer (0=UNUSED, 1=USED, 2=SLEEPING, 3=RUNNABLE, 4=RUNNING, 5=ZOMBIE).
+  * `sz`: The size of the process's memory in bytes.
+  * `name[PROC_NAME_MAX]`: The name of the process (up to 16 characters).
+
+### System Calls Implemented
+1. `sys_getproccount(void)`
+   * **Purpose:** Returns the number of currently active (non-UNUSED) processes in the system.
+   * **Mechanism:** Iterates through the entire `proc[]` table in `kernel/proc.c`, acquires each process's lock, checks if its state is not `UNUSED`, and increments a counter. The final count is returned directly as the syscall return value.
+
+2. `sys_getprocinfo(int pid, struct procinfo *info)`
+   * **Purpose:** Fills a user-supplied `struct procinfo` buffer with metadata about the process matching the given `pid`.
+   * **Mechanism:** Scans the `proc[]` table for a matching `pid` with a non-UNUSED state. On a match, it copies the `pid`, `state`, `sz`, and `name` fields into a kernel-side `struct procinfo`, then uses `copyout()` to safely transfer it to the user-space pointer. Returns `0` on success and `-1` if no matching process is found.
+
+### Supporting Changes
+* **`kernel/syscall.h`**: Added syscall numbers `SYS_getproccount` (26) and `SYS_getprocinfo` (27).
+* **`kernel/syscall.c`**: Registered the two new syscall handler functions in the dispatch table.
+* **`kernel/defs.h`**: Declared the kernel-internal helper functions `kgetproccount()` and `kgetprocinfo()`.
+* **`user/usys.pl`**: Added `entry("getproccount")` and `entry("getprocinfo")` to auto-generate the user-space syscall stubs.
+* **`user/user.h`**: Exposed `getproccount()` and `getprocinfo()` as callable functions for user programs.
+
+### Testing & Execution
+* **Test Program:** `$ proctest`
+* The test program calls `getproccount()` to display the number of active processes, then calls `getprocinfo()` on its own PID to print its name, state, and memory size, and finally verifies that `getprocinfo(9999, ...)` correctly returns `-1` for a non-existent process.
+* **Screenshots:** ![alt text](project_1.png)
