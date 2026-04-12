@@ -126,6 +126,12 @@ found:
   p->pid = allocpid();
   p->state = USED;
 
+  p->pending_signals = 0;
+  p->handling_signal = 0;
+  for(int i = 0; i < 32; i++) {
+    p->signal_handlers[i] = (uint64)-1;
+  }
+
    p->fork_count = 0;
 
   // Allocate a trapframe page.
@@ -868,4 +874,21 @@ procdump(void)
     printf("%d %s %s", p->pid, state, p->name);
     printf("\n");
   }
+}
+
+int
+ksigsend(int pid, int signum)
+{
+  struct proc *p;
+
+  for(p = proc; p < &proc[NPROC]; p++){
+    acquire(&p->lock);
+    if(p->pid == pid){
+      p->pending_signals |= (1 << signum);
+      release(&p->lock);
+      return 0;
+    }
+    release(&p->lock);
+  }
+  return -1;
 }

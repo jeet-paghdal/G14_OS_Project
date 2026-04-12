@@ -8,6 +8,7 @@ struct spinlock;
 struct sleeplock;
 struct stat;
 struct superblock;
+struct procinfo;
 
 // bio.c
 void            binit(void);
@@ -106,6 +107,10 @@ uint64          sys_getppid(void);
 
 int             kwaitpid(int, uint64);
 int             kgetchildren(uint64, int);
+int             kgetproccount(void);
+int             kgetprocinfo(int, struct procinfo*);
+
+int             ksigsend(int, int);
 
 // swtch.S
 void            swtch(struct context*, struct context*);

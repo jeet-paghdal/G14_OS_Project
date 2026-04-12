@@ -1,3 +1,4 @@
+#include "kernel/procinfo.h"
 #define SBRK_ERROR ((char *)-1)
 
 struct stat;
@@ -31,6 +32,12 @@ int getchildren(int *buf, int maxn);
 int thread_create(void (*func)(void*), void* arg);
 int thread_join(int pid);
 void thread_exit(void);
+int getproccount(void);
+int getprocinfo(int pid, struct procinfo*);
+
+int signal(int signum, void (*handler)());
+int sigsend(int pid, int signum);
+int sigreturn(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

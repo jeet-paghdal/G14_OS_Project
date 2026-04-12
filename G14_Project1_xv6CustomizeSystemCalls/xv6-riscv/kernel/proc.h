@@ -81,6 +81,7 @@ struct trapframe {
 
 enum procstate { UNUSED, USED, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
+#define NSIG 32
 // Per-process state
 struct proc {
   struct spinlock lock;
@@ -105,4 +106,9 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+
+  uint pending_signals;             // Bitmap of pending signals
+  uint64 signal_handlers[NSIG];     // Array to store handler addresses
+  struct trapframe saved_trapframe; // Backup of trapframe during signal execution
+  int handling_signal;
 };

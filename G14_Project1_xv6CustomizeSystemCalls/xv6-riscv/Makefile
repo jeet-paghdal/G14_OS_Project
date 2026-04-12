@@ -150,6 +150,8 @@ UPROGS=\
 	$U/_testproc\
 	$U/_threadtest\
 	$U/_thread_demo\
+	$U/_proctest\
+	$U/_testsignals\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

@@ -103,6 +103,46 @@ static void run_custom_ls(char **args) {
     waitpid(pid, &status, 0);
 }
 
+static void run_custom_cp(char **args) {
+    char local_path[512];
+    snprintf(local_path, sizeof(local_path), "./custom_cp");
+
+    pid_t pid = fork();
+    if (pid < 0) {
+        perror("fork");
+        return;
+    }
+    if (pid == 0) {
+        args[0] = local_path;
+        execv(local_path, args);
+        fprintf(stderr, "myshell: custom_cp: %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+    
+    int status;
+    waitpid(pid, &status, 0);
+}
+
+static void run_custom_mv(char **args) {
+    char local_path[512];
+    snprintf(local_path, sizeof(local_path), "./custom_mv");
+    
+    pid_t pid = fork();
+    if (pid < 0) {
+       perror("fork");
+       return;
+    }
+    if (pid == 0) {
+       args[0] = local_path;
+       execv(local_path, args);
+       fprintf(stderr, "myshell: custom_mv: %s\n", strerror(errno));
+       exit(EXIT_FAILURE);
+    }
+    
+    int status;
+    waitpid(pid, &status, 0);
+}
+
 int main(void) {
     char  line[MAX_INPUT];
     char *args[MAX_ARGS];
@@ -129,7 +169,6 @@ int main(void) {
             break;
         }
 
-        // Updated command routing logic
         if (strcmp(args[0],"custom_echo") == 0) {
             run_custom_echo(args);
         } else if(strcmp(args[0],"custom_wc") == 0) {
@@ -138,6 +177,10 @@ int main(void) {
             run_custom_cat(args);
         } else if(strcmp(args[0],"custom_ls") == 0) {
             run_custom_ls(args);
+        } else if(strcmp(args[0],"custom_cp") == 0) { 
+            run_custom_cp(args);
+        } else if(strcmp(args[0],"custom_mv") == 0) { 
+            run_custom_mv(args);
         } else {
             fprintf(stderr, "myshell: unknown command '%s'.\n", args[0]);
         }
