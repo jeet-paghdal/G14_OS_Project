@@ -18,7 +18,7 @@ void worker_thread(void* arg) {
     printf("[Thread %d] Starting work on: %s\n", t->id, t->name);
     delay(3);
     printf("[Thread %d] Finished processing: %s\n", t->id, t->name);
-    exit(0);
+    thread_exit();
 }
 
 int main(int argc, char *argv[]) {

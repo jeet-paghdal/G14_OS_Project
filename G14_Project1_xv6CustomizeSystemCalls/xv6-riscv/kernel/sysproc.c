@@ -46,6 +46,13 @@ sys_thread_join(void)
 }
 
 uint64
+sys_thread_exit(void)
+{
+  kexit(0);
+  return 0;  // not reached
+}
+
+uint64
 sys_wait(void)
 {
   uint64 p;

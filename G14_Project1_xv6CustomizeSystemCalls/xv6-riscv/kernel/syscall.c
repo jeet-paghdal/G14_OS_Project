@@ -107,6 +107,7 @@ extern uint64 sys_waitpid(void);
 extern uint64 sys_getchildren(void);
 extern uint64 sys_thread_create(void);
 extern uint64 sys_thread_join(void);
+extern uint64 sys_thread_exit(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -139,6 +140,7 @@ static uint64 (*syscalls[])(void) = {
 [SYS_getprocinfo] 0,
 [SYS_thread_create] sys_thread_create,
 [SYS_thread_join] sys_thread_join,
+[SYS_thread_exit] sys_thread_exit,
 };
 
 void

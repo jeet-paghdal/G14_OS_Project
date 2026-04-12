@@ -30,6 +30,7 @@ int waitpid(int pid, int *status);
 int getchildren(int *buf, int maxn);
 int thread_create(void (*func)(void*), void* arg);
 int thread_join(int pid);
+void thread_exit(void);
 
 // ulib.c
 int stat(const char*, struct stat*);
