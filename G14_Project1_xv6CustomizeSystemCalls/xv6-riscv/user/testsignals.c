@@ -46,7 +46,6 @@ int main(int argc, char *argv[]) {
   } else {
     // --- PARENT PROCESS ---
     // Give the child a moment to register its handler
-    // Your xv6 has a pause(ticks) function acting as a sleep
     pause(10); 
 
     printf("Parent: Sending signal %d to child PID %d\n", signum, pid);
