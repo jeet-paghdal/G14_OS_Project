@@ -38,6 +38,14 @@ sys_thread_create(void)
 }
 
 uint64
+sys_thread_join(void)
+{
+  int pid;
+  argint(0, &pid);
+  return kwaitpid(pid, 0);
+}
+
+uint64
 sys_wait(void)
 {
   uint64 p;

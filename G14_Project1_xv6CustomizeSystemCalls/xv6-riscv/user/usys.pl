@@ -46,3 +46,4 @@ entry("getppid");
 entry("waitpid");
 entry("getchildren");
 entry("thread_create");
+entry("thread_join");
