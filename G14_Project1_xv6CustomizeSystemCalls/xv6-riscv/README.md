@@ -144,3 +144,40 @@ This feature introduces two new system calls(getprocinfo( ) & getproccount()) th
 * **Test Program:** `$ proctest`
 * The test program calls `getproccount()` to display the number of active processes, then calls `getprocinfo()` on its own PID to print its name, state, and memory size, and finally verifies that `getprocinfo(9999, ...)` correctly returns `-1` for a non-existent process.
 * **Screenshots:** ![alt text](screenshots/proctest_execution.png)
+
+---
+
+## Feature 4: Threading Functionality
+**Implemented by:** PR Sanjit Ram (24JE0666)
+
+This feature introduces threading capabilities to xv6, allowing multiple threads to execute concurrently within a single process, enabling better resource utilization and parallel execution.
+
+### Core Modifications
+* **Thread Structure (`kernel/thread.h`)**: Added a new thread structure to manage thread-specific information including thread ID, stack, and state.
+* **Process Control Block Updates (`kernel/proc.h`)**: Extended the process structure to maintain a list of threads associated with each process.
+* **Scheduler Modifications (`kernel/proc.c`)**: Updated the scheduler to handle thread scheduling alongside process scheduling.
+
+### System Calls Implemented
+1. `sys_thread_create(void (*start_routine)(void*), void *arg)`
+   * **Purpose:** Creates a new thread within the current process.
+   * **Mechanism:** Allocates thread resources, sets up the thread's stack and context, and adds it to the process's thread list.
+
+2. `sys_thread_join(int tid)`
+   * **Purpose:** Waits for a specific thread to complete execution.
+   * **Mechanism:** Blocks the calling thread until the specified thread terminates, then cleans up thread resources.
+
+3. `sys_thread_exit(void)`
+   * **Purpose:** Terminates the calling thread.
+   * **Mechanism:** Marks the thread as terminated and schedules cleanup.
+
+### Supporting Changes
+* **Thread Management (`kernel/thread.c`)**: New file containing thread creation, scheduling, and cleanup functions.
+* **Trap Handling (`kernel/trap.c`)**: Updated to handle thread-specific traps and context switching.
+* **User-Space Library (`user/thread.h` and `user/thread.c`)**: Provides user-level threading API.
+
+### Testing & Execution
+* **Test Program:** `$ threadtest`
+* The test program demonstrates thread creation, execution, and synchronization by creating multiple threads that perform concurrent tasks.
+* **Screenshots:** 
+  ![Thread Test C Code](screenshots/thread_test_c-code.png)
+  ![Thread Test Execution](screenshots/thread_test.png)
