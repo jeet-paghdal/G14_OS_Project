@@ -6,7 +6,7 @@
 This repository contains the implementation for Project 1, which focuses on analyzing and modifying the xv6 operating system by adding new system calls. The project demonstrates core OS concepts including process creation, inter-process communication, and signals.
 
 ## Contributors
-* **Nidhi Mithiya (24JE0664)** - 
+* **Nidhi Mithiya (24JE0664)** - Process Creation Related SystemCalls implementation - 'getppid' & 'forkcount'
 * **Nilay Choudhary (24JE0665)** - Signals Implementation
 * **PR Sanjit Ram (24JE0666)** - Threads Implementation
 * **Paghdal Jeet Prakashkumar (24JE0667)** - `waitpid` & `getchildren` Implementation
@@ -193,3 +193,36 @@ This feature introduces threading capabilities to xv6, allowing multiple threads
 * The test program demonstrates thread creation, execution, and synchronization by creating multiple threads that perform concurrent tasks.
 * **Screenshots:** 
   ![Thread Test Execution](screenshots/thread_test.png)
+
+## Feature 5: Process Creation Control and Lineage (`getppid` & `forkcount`)
+**Implemented by:** Nidhi Mithiya (24JE0664)
+
+This feature introduces process lineage tracking by allowing a process to query its parent's PID, and implements resource control by modifying the core `fork()` system call to limit the maximum number of child processes a single parent can spawn, preventing fork bombs.
+
+### Core Modifications
+* **Process Control Block (`kernel/proc.h`)**: Expanded `struct proc` to include:
+  * `child_count`: An unsigned integer field used to track the total number of child processes spawned by a specific parent process.
+* **Process Allocation (`kernel/proc.c`)**: Updated `allocproc()` to initialize the `child_count` variable to `0` whenever a new process is created. 
+* **Fork Modification (`kernel/proc.c`)**: Altered the core `fork()` function logic to enforce a strict limit on process creation. Before allocating memory for a new child, it checks if the parent's `child_count` has reached the predefined limit (10). If the limit is reached, it denies the fork and returns `-1`. Otherwise, it increments the parent's `child_count` and proceeds with the standard `uvmcopy` and memory allocation.
+
+### System Calls Implemented
+1. `sys_getppid(void)`
+   * **Purpose:** Retrieves the Process ID (PID) of the calling process's parent.
+   * **Mechanism:** Accesses the current process via `myproc()`. It verifies that a parent exists (`myproc()->parent`), and if so, returns `myproc()->parent->pid`.
+
+### Supporting Changes
+* **`kernel/syscall.h`**: Added the syscall number for `SYS_getppid`.
+* **`kernel/syscall.c`**: Registered the `sys_getppid` function in the syscall dispatch table.
+* **`kernel/sysproc.c`**: Added the wrapper logic for `sys_getppid` to interact with user-space.
+* **`user/usys.pl`**: Added `entry("getppid")` to generate the assembly stub.
+* **`user/user.h`**: Exposed `getppid(void)` as a callable function for user programs.
+
+### Testing & Execution
+* **Test Program 1:** `$ ppid`
+  * **What the test does:** Calls `getpid()` to print its own PID, then calls `getppid()` to print the parent's PID.
+  * **Result:** Output successfully maps child to parent (e.g., My PID: 3, My Parent PID: 2).
+* **Test Program 2:** `$ forkcount`
+  * **What the test does:** Attempts to continuously execute `fork()` in a loop to spawn multiple child processes, testing the resource limit modifications made in `proc.c`.
+  * **Result:** Successfully blocks creation after hitting the threshold, outputting `Fork failed at iteration 10`.
+* **Screenshots:** * ![PPID Test Execution](screenshots/ppid_execution.png)
+  * ![Forkcount Test Execution](screenshots/forkcount_execution.png)
