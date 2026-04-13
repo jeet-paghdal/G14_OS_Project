@@ -9,7 +9,7 @@ This repository contains the implementation for Project 2 (Option 1). We have de
 * **Nilay Choudhary (24JE0665)** - Implemented `custom_cp` and `custom_mv`.
 * **Patel Het Alpeshbhai (24JE0670)** - Implemented `custom_wc`.
 * **Paghdal Jeet Prakashkumar (24JE0667)** - Implemented `custom_echo`.
-* **[Teammate 4 Name]** - 
+* **Nidhi Mithiya (24JE0664) ** - Implemented 'custom_ls' and 'custom_cat'
 * **[Teammate 5 Name]** - 
 
 ---
@@ -57,16 +57,18 @@ The shell operates in a continuous loop, parsing user input into arguments. When
 * **Details:** Atomically updates the directory link. If the destination path already exists as a regular file, it is overwritten.
 
 ### 3. File Concatenation: `custom_cat`
-**Implemented by:** 
-* **Usage:** `custom_cat <filename>`
-* **Description:** Opens the specified file and writes its contents to the standard output.
-* **Details:** 
+**Implemented by:** Nidhi Mithiya (24JE0664)
+* **Usage:** `custom_cat <filename> [filename2] ...`
+* **Description:** Opens the specified file(s), reads the contents, and prints them sequentially to the standard output.
+* **System Calls:** Uses POSIX system calls `open()`, `read()`, `write()`, and `close()`.
+* **Details:** Processes files in a loop to allow multiple arguments. Opens each file in `O_RDONLY` mode. Uses a robust 4096-byte buffer in a `while` loop to efficiently read data chunks and write them directly to `STDOUT_FILENO`. Includes standard error handling to skip invalid files without crashing the shell.
 
 ### 4. Directory Listing: `custom_ls`
-**Implemented by:** [Teammate Name]
-* **Usage:** `custom_ls`
-* **Description:** Lists the contents of the current working directory.
-* **Details:**
+**Implemented by:** Nidhi Mithiya (24JE0664)
+* **Usage:** `custom_ls [directory]`
+* **Description:** Lists the file and directory contents of the specified path. Defaults to the current working directory if no path is provided.
+* **System Calls:** Uses `<dirent.h>` library functions `opendir()`, `readdir()`, and `closedir()`.
+* **Details:** Opens a directory stream and iterates through the `dirent` structures. Replicates standard `ls` behavior by actively checking the first character of `d_name` and filtering out hidden system files (those beginning with a `.`). Formats the output with clean spacing before safely closing the directory stream.
 
 ### 5. Word Count: `custom_wc`
 **Implemented by:** Patel Het Alpeshbhai(24JE0670)
