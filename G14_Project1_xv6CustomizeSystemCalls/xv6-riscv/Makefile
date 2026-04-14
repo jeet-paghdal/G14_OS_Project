@@ -151,6 +151,7 @@ UPROGS=\
 	$U/_threadtest\
 	$U/_thread_demo\
 	$U/_proctest\
+	$U/_ipctest\
 	$U/_testsignals\
 
 fs.img: mkfs/mkfs README $(UPROGS)

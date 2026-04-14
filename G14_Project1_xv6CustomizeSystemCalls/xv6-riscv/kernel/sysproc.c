@@ -230,3 +230,29 @@ sys_sigsend(void)
   // ksigsend needs to be implemented in proc.c
   return ksigsend(pid, signum);
 }
+
+uint64
+sys_ipc_send(void)
+{
+  int pid;
+  uint64 src;
+  int n;
+
+  argint(0, &pid);
+  argaddr(1, &src);
+  argint(2, &n);
+
+  return kipc_send(pid, src, n);
+}
+
+uint64
+sys_ipc_recv(void)
+{
+  uint64 dst;
+  int n;
+
+  argaddr(0, &dst);
+  argint(1, &n);
+
+  return kipc_recv(dst, n);
+}

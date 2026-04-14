@@ -28,6 +28,8 @@
 #define SYS_thread_create 31
 #define SYS_thread_join   32
 #define SYS_thread_exit   33
+#define SYS_ipc_send      34
+#define SYS_ipc_recv      35
 
 #define SYS_signal    28
 #define SYS_sigsend   29

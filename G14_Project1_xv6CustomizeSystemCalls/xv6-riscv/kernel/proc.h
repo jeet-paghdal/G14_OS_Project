@@ -82,6 +82,7 @@ struct trapframe {
 enum procstate { UNUSED, USED, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
 #define NSIG 32
+#define IPC_MAX_MSG 64
 // Per-process state
 struct proc {
   struct spinlock lock;
@@ -111,4 +112,8 @@ struct proc {
   uint64 signal_handlers[NSIG];     // Array to store handler addresses
   struct trapframe saved_trapframe; // Backup of trapframe during signal execution
   int handling_signal;
+
+  int ipc_ready;
+  int ipc_len;
+  char ipc_msg[IPC_MAX_MSG];
 };

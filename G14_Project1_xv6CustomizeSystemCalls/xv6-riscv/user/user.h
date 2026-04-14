@@ -38,6 +38,8 @@ int getprocinfo(int pid, struct procinfo*);
 int signal(int signum, void (*handler)());
 int sigsend(int pid, int signum);
 int sigreturn(void);
+int ipc_send(int pid, const void *buf, int n);
+int ipc_recv(void *buf, int n);
 
 // ulib.c
 int stat(const char*, struct stat*);

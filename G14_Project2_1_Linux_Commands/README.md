@@ -11,6 +11,7 @@ This repository contains the implementation for Project 2 (Option 1). We have de
 * **Paghdal Jeet Prakashkumar (24JE0667)** - Implemented `custom_echo`.
 * **Nidhi Mithiya (24JE0664)** - Implemented `custom_ls` and `custom_cat`.
 * **Sanjit Ram (24JE0666)** - Implemented `custom_rm`.
+* **Parul Sharma (24JE0669)** - Implemented `custom_grep`.
 
 ---
 
@@ -107,7 +108,17 @@ The shell operates in a continuous loop, parsing user input into arguments. When
 
 ---
 
-### 7. File Removal: `custom_rm`
+### 7. Pattern Search: `custom_grep`
+**Implemented by:** Parul Sharma (24JE0669)
+
+- **Usage:** `custom_grep [OPTION]... PATTERN [FILE]...`
+- **Description:** Searches for matching lines using regular expressions
+- **System Calls:** `regcomp()`, `regexec()`, `fopen()`, `fgetc()`, `fclose()`
+- **Details:** Supports `-i`, `-n`, `-v`, `-c`, and `-l`, and reads from standard input when no file is provided
+
+---
+
+### 8. File Removal: `custom_rm`
 **Implemented by:** Sanjit Ram (24JE0666)
 
 - **Usage:** `custom_rm [-r] <file|directory> [file|directory ...]`
@@ -131,3 +142,6 @@ The shell operates in a continuous loop, parsing user input into arguments. When
 
 ## Proof of Execution
 ![Custom commands test](screenshot/custom_commands.png)
+
+### grep execution
+![Custom grep execution](screenshot/custom_grep.png)

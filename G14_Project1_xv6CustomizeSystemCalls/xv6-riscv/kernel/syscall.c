@@ -114,6 +114,8 @@ extern uint64 sys_getprocinfo(void);
 extern uint64 sys_signal(void);
 extern uint64 sys_sigsend(void);
 extern uint64 sys_sigreturn(void);
+extern uint64 sys_ipc_send(void);
+extern uint64 sys_ipc_recv(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -150,6 +152,8 @@ static uint64 (*syscalls[])(void) = {
 [SYS_signal]    sys_signal,
 [SYS_sigsend]   sys_sigsend,
 [SYS_sigreturn] sys_sigreturn,
+[SYS_ipc_send]  sys_ipc_send,
+[SYS_ipc_recv]  sys_ipc_recv,
 };
 
 void

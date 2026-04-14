@@ -53,3 +53,5 @@ entry("getprocinfo");
 entry("signal");
 entry("sigsend");
 entry("sigreturn");
+entry("ipc_send");
+entry("ipc_recv");

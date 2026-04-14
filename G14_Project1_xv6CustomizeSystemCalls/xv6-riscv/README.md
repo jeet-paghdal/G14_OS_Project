@@ -10,7 +10,7 @@ This repository contains the implementation for Project 1, which focuses on anal
 * **Nilay Choudhary (24JE0665)** - Signals Implementation
 * **PR Sanjit Ram (24JE0666)** - Threads Implementation
 * **Paghdal Jeet Prakashkumar (24JE0667)** - `waitpid` & `getchildren` Implementation
-* **Parul Sharma (24JE0669)** - 
+* **Parul Sharma (24JE0669)** - Inter-Process Communication (IPC) Implementation
 * **Patel Het Alpeshbhai (24JE0670)** - Process Inspection System Calls
 
 ---
@@ -161,7 +161,44 @@ This feature introduces two new system calls(getprocinfo( ) & getproccount()) th
 
 ---
 
-## Feature 4: Threading Functionality
+## Feature 4: Inter-Process Communication (IPC)
+**Implemented by:** Parul Sharma
+
+This feature adds a small message-passing interface to xv6 so one process can send a short payload to another and block until a reply is received.
+
+### Core Modifications
+* **Process Control Block (`kernel/proc.h`)**: Added a lightweight per-process mailbox with a readiness flag, message length, and fixed-size message buffer.
+* **Process Allocation (`kernel/proc.c`)**: Initialized the mailbox state in `allocproc()` and cleared it when a process is freed.
+* **Kernel Internal Declarations (`kernel/defs.h`)**: Added prototypes for `kipc_send(int, uint64, int)` and `kipc_recv(uint64, int)`.
+
+### System Calls Implemented
+1. `sys_ipc_send(int pid, const void *buf, int n)`
+  * **Purpose:** Sends a short message from the current process to the process identified by `pid`.
+  * **Mechanism:** Copies up to 64 bytes from user space, stores the payload in the target process mailbox, marks it ready, and wakes the receiver if it is sleeping.
+
+2. `sys_ipc_recv(void *buf, int n)`
+  * **Purpose:** Receives a pending message from the calling process mailbox.
+  * **Mechanism:** Sleeps until a message is available, copies the payload to the user buffer, clears the mailbox state, and returns the number of bytes copied.
+
+### Supporting Changes
+* **`kernel/syscall.h`**: Added syscall numbers `SYS_ipc_send` (34) and `SYS_ipc_recv` (35).
+* **`kernel/syscall.c`**: Registered the new IPC syscall handlers in the dispatch table.
+* **`kernel/sysproc.c`**: Added wrappers that extract syscall arguments and delegate to the kernel IPC helpers.
+* **`user/usys.pl`**: Added `entry("ipc_send")` and `entry("ipc_recv")` to auto-generate user-space stubs.
+* **`user/user.h`**: Exposed `ipc_send()` and `ipc_recv()` to user programs.
+
+### Testing & Execution
+* **Test Program:** `$ ipctest`
+* **What the test does:**
+  1. Prints a banner, active process count, and the parent PID.
+  2. Forks a child, prints process info for both sides, and shows the child waiting for a message.
+  3. The parent sends a message, the child prints the payload, then replies back.
+  4. The parent prints the reply and the demo ends with a success banner.
+* **Screenshots:** ![IPC Test Execution](screenshots/ipctest_execution.png)
+
+---
+
+## Feature 5: Threading Functionality
 **Implemented by:** PR Sanjit Ram (24JE0666)
 
 This feature introduces threading capabilities to xv6, allowing multiple threads to execute concurrently within a single process, enabling better resource utilization and parallel execution.
@@ -195,7 +232,7 @@ This feature introduces threading capabilities to xv6, allowing multiple threads
 * **Screenshots:** 
   ![Thread Test Execution](screenshots/thread_test.png)
 
-## Feature 5: Process Creation Control and Lineage (`getppid` & `forkcount`)
+## Feature 6: Process Creation Control and Lineage (`getppid` & `forkcount`)
 **Implemented by:** Nidhi Mithiya (24JE0664)
 
 This feature introduces process lineage tracking by allowing a process to query its parent's PID, and implements resource control by modifying the core `fork()` system call to limit the maximum number of child processes a single parent can spawn, preventing fork bombs.

@@ -128,9 +128,12 @@ found:
 
   p->pending_signals = 0;
   p->handling_signal = 0;
+  p->ipc_ready = 0;
+  p->ipc_len = 0;
   for(int i = 0; i < 32; i++) {
     p->signal_handlers[i] = (uint64)-1;
   }
+  memset(p->ipc_msg, 0, sizeof(p->ipc_msg));
 
    p->fork_count = 0;
 
@@ -177,6 +180,8 @@ freeproc(struct proc *p)
   p->chan = 0;
   p->killed = 0;
   p->xstate = 0;
+  p->ipc_ready = 0;
+  p->ipc_len = 0;
   p->state = UNUSED;
 }
 
@@ -891,4 +896,72 @@ ksigsend(int pid, int signum)
     release(&p->lock);
   }
   return -1;
+}
+
+int
+kipc_send(int pid, uint64 src, int n)
+{
+  struct proc *sender = myproc();
+  struct proc *target;
+  char msg[IPC_MAX_MSG];
+
+  if(n < 0)
+    return -1;
+
+  if(n > IPC_MAX_MSG)
+    n = IPC_MAX_MSG;
+
+  if(n > 0 && copyin(sender->pagetable, msg, src, n) < 0)
+    return -1;
+
+  acquire(&wait_lock);
+  for(target = proc; target < &proc[NPROC]; target++){
+    if(target->pid == pid && target->state != UNUSED){
+      if(target->ipc_ready){
+        release(&wait_lock);
+        return -1;
+      }
+      if(n > 0)
+        memmove(target->ipc_msg, msg, n);
+      target->ipc_len = n;
+      target->ipc_ready = 1;
+      wakeup(target);
+      release(&wait_lock);
+      return n;
+    }
+  }
+  release(&wait_lock);
+  return -1;
+}
+
+int
+kipc_recv(uint64 dst, int n)
+{
+  struct proc *p = myproc();
+  int m;
+
+  if(n < 0)
+    return -1;
+
+  acquire(&wait_lock);
+  for(;;){
+    if(p->ipc_ready){
+      m = p->ipc_len;
+      if(m > n)
+        m = n;
+      if(m > 0 && copyout(p->pagetable, dst, p->ipc_msg, m) < 0){
+        release(&wait_lock);
+        return -1;
+      }
+      p->ipc_ready = 0;
+      p->ipc_len = 0;
+      release(&wait_lock);
+      return m;
+    }
+    if(killed(p)){
+      release(&wait_lock);
+      return -1;
+    }
+    sleep(p, &wait_lock);
+  }
 }

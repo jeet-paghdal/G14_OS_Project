@@ -111,6 +111,8 @@ int             kgetproccount(void);
 int             kgetprocinfo(int, struct procinfo*);
 
 int             ksigsend(int, int);
+int             kipc_send(int, uint64, int);
+int             kipc_recv(uint64, int);
 
 // swtch.S
 void            swtch(struct context*, struct context*);
