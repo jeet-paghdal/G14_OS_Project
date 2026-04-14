@@ -121,7 +121,8 @@ This feature introduces two new process management system calls that extend xv6'
   waitpid(6) returned 6, exit status = 12
   testproc done
   ```
-* **Screenshots:** Execution proof demonstrating successful child listing via `getchildren` and precise per-PID synchronization via `waitpid` can be found in the `screenshots/` directory.
+* **Screenshots:** ![alt text](screenshots/waitpid-getchildren_execution.png)
+
 
 ---
 
